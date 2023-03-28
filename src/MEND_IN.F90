@@ -22,6 +22,8 @@ SUBROUTINE MENDIN(sPAR_SCE,sINI)
     USE MOD_USRFS,  only: nDaysbwDates,nMonsbwDates,nDaysofMon
     USE MOD_USRFS,  only: sDate_After,sInt2Str
     USE MOD_USRFS,  only: Array_Normalize !!function 
+    
+    USE photosyn, only : can_photosyn  ! added by zheng
 
     IMPLICIT NONE
     !!ARGUMENTS:
@@ -126,6 +128,7 @@ SUBROUTINE MENDIN(sPAR_SCE,sINI)
     character(len=10)   :: step_NO3
     character(len=20)   :: sfilename_NH4(1), sfilename_NO3(1)
     real(8)             :: ST_constant, SM_constant, Input_type1_constant, NH4_constant, NO3_constant
+    real(8), allocatable :: gpp_m(:) 
 
     namelist /mend_config/ sSite, sBIOME, sSOM, iModel, ssMEND, iSA_range, Altitude,GPPref, iGPPscaler, &
                        Dir_Input, Dir_Output, &
@@ -510,6 +513,10 @@ SUBROUTINE MENDIN(sPAR_SCE,sINI)
       else !!constant litter input [mgC/cm3/h]
           sINI%SIN = Input_type1_constant
       end if
+      ! 
+      ! -------------------------------------------------------
+      call can_photosyn(gpp_m) ! modeled GPP (instead of direct input) added by zheng 
+      sINI%SIN(1:size(gpp_m)) = gpp_m 
       
       !!soil pH
       if(ifdata_pH.eq.1) then  !!nfile = 1 if ststep='monthly'

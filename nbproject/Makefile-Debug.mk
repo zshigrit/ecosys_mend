@@ -17,7 +17,7 @@ RANLIB=ranlib
 CC=gcc
 CCC=g++
 CXX=g++
-FC=/usr/local/gfortran-8.2/bin/gfortran
+FC=/usr/local/bin/gfortran
 AS=as
 
 # Macros
